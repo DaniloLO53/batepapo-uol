@@ -1,0 +1,205 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.greaterContainer {
+  position: absolute;
+  /* background-color: red; */
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px 12px 30px;
+  font-size: 45px;
+  box-shadow: 0 0 13px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  position: fixed;
+  background-color: palegoldenrod;
+  height: 80px;
+}
+
+main {
+  background-color: gray;
+  margin-top: 80px;
+  /* position: absolute; */
+}
+
+figure {
+  display: flex;
+  align-items: center;
+}
+
+aside.message {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  font-size: 36px;
+  padding: 36px 12px 36px 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+aside.message label {
+  display: flex;
+  height: 60px;
+  width: 85%;
+}
+
+aside.message label input {
+  width: 100%;
+  border: none;
+  color: black;
+  font-size: 18px;
+}
+
+aside.message label input::placeholder {
+  color: black;
+  font-style: italic;
+}
+
+.sidebarWithBackdrop {
+  /* background-color: aquamarine; */
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+}
+
+.backdrop {
+  width: 25vw;
+}
+
+aside.sidebar {
+  background-color: white;
+  z-index: 3;
+  position: relative;
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebarContainer {
+  /* background-color: purple; */
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
+.contacts, .visibility {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.contacts div:first-of-type, .visibility div:first-of-type {
+  text-align: center;
+  width: 100%;
+  padding: 25px 35px 25px 35px;
+  font-size: 16px;
+}
+
+.inactive {
+  transform: translateX(100vw);
+  transition: 0.2s ease;
+}
+
+.active {
+  transform: translateX(0);
+  transition: 0.2s ease;
+}
+
+.show {
+  animation-name: backdropShow;
+  animation-delay: 0.13s;
+  animation-fill-mode: forwards;
+}
+
+.hide {
+  animation-name: backdropHide;
+  animation-delay: 0.13s;
+  animation-fill-mode: forwards;
+}
+
+.loginContainer {
+  background-color: white;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  /* left: 50px; */
+  top: 0;
+  z-index: 99;
+}
+
+.loginContainer input {
+  position: absolute;
+  width: 50%;
+  left: 50%;
+  top: calc(50% - 80px);
+  transform: translateX(-50%);
+  padding: 15px 45px 15px 45px;
+  border: 1px solid #d7d7d7;
+}
+
+.loginContainer input::placeholder {
+  text-align: center;
+  font-size: 18px;
+}
+
+.loginContainer figure {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(50% - 290px);
+}
+
+.loginContainer button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 15px 40px 15px 40px;
+  border-radius: 10px;
+  border: none;
+  background-color: #e7e7e7;
+  font-size: 20px;
+}
+
+.hideLogin {
+  display: none;
+}
+
+@keyframes backdropShow {
+  from {
+    display: none;
+  }
+
+  to {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes backdropHide {
+  from {
+    display: initial;
+  }
+
+  to {
+    display: none;
+  }
+}
