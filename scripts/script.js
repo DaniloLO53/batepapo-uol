@@ -52,14 +52,14 @@ const keepConnection = () => {
 };
 
 const loadMessages = async () => {
-  const request = await axios.get('http://mock-api.driven.com.br/api/v6/uol/messages');
-  console.log(request);
+  axios.get('https://mock-api.driven.com.br/api/v6/uol/messages').then((r) => console.log(r));
+  // console.log(request);
 };
 
 const loginHandle = async (response) => {
   const fetched = await response;
-  const fetchedJson = await fetched.json();
-  console.log(fetchedJson);
+  // const fetchedJson = await fetched.json();
+  console.log(fetched);
 
   if (fetched.status === 200) {
     const loginContainer = document.querySelector('.loginContainer');
