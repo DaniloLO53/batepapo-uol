@@ -11,6 +11,7 @@ body {
 
 .greaterContainer {
   position: absolute;
+  width: 100%;
   /* background-color: red; */
 }
 
@@ -23,14 +24,18 @@ header {
   box-shadow: 0 0 13px rgba(0, 0, 0, 0.3);
   width: 100%;
   position: fixed;
-  background-color: palegoldenrod;
+  /* background-color: palegoldenrod; */
   height: 80px;
 }
 
 main {
-  background-color: gray;
+  /* background-color: gray; */
   margin-top: 80px;
+  z-index: -1;
   /* position: absolute; */
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 figure {
@@ -49,7 +54,7 @@ aside.message {
   font-size: 36px;
   padding: 36px 12px 36px 12px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  z-index: -1;
+  z-index: 0;
 }
 
 aside.message label {
@@ -71,10 +76,11 @@ aside.message label input::placeholder {
 }
 
 .sidebarWithBackdrop {
-  /* background-color: aquamarine; */
+  background-color: aquamarine;
   min-height: 100vh;
   width: 100%;
   display: flex;
+  /* z-index: 0; */
 }
 
 .backdrop {
@@ -83,7 +89,7 @@ aside.message label input::placeholder {
 
 aside.sidebar {
   background-color: white;
-  z-index: 3;
+  /* z-index: 3; */
   position: relative;
   width: 75%;
   display: flex;
@@ -104,11 +110,55 @@ aside.sidebar {
   flex-direction: column;
 }
 
-.contacts div:first-of-type, .visibility div:first-of-type {
+.contacts .description, .visibility .description {
   text-align: center;
+  /* background-color: red; */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   padding: 25px 35px 25px 35px;
   font-size: 16px;
+}
+
+.participants {
+  /* background-color: red; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  width: 100%;
+}
+
+.participantsButton, .visibilityButton {
+  /* background-color: green; */
+  /* width: 600px; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 5px 3px 5px;
+}
+
+.participantsInfo, .visibilityInfo {
+  /* background-color: greenyellow; */
+  display: flex;
+  align-items: center;
+  /* width: 50px; */
+}
+
+.participantsInfo *, .visibilityInfo * {
+  margin: 0 7px 0 7px;
+} 
+
+.participantsButton ion-icon, .visibilityButton ion-icon {
+  /* background-color: gold; */
+  font-size: 32px;
+}
+
+.participantsButton .check, .visibilityButton .check {
+  color: green;
+}
+
+.hideCheck {
+  display: none;
 }
 
 .inactive {
@@ -164,7 +214,7 @@ aside.sidebar {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: calc(50% - 290px);
+  top: calc(50% - 220px);
 }
 
 .loginContainer button {
@@ -181,6 +231,37 @@ aside.sidebar {
 
 .hideLogin {
   display: none;
+}
+
+main{
+  
+}
+
+.messagesContainer {
+  /* z-index: -1; */
+  /* background-color: red; */
+  display: flex;
+  flex-direction: column;
+
+}
+
+.messageBlock {
+  /* background-color: green; */
+  display: flex;
+  padding: 12px;
+  margin: 3px 0 3px 0;
+}
+
+.messageBlock * {
+  margin: 0 3px 0 3px;
+}
+
+.messageTime {
+  color: #aaaaaa;
+}
+
+.messageAuthor, .messageTo {
+  font-weight: 700;
 }
 
 @keyframes backdropShow {
