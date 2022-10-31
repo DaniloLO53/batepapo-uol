@@ -45,6 +45,10 @@ const buildLoginPage = () => {
   input.classList.add('loginName');
   button.classList.add('loginButton');
 
+  loginContainer.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') button.click();
+  });
+
   figureImage.src = './assets/images/logo 1@2x.png';
   input.placeholder = 'Digite seu nome';
   button.setAttribute('type', 'button');
@@ -89,7 +93,7 @@ const participantsHandleClick = (event) => {
   correctTarget.firstElementChild.nextElementSibling.classList.remove('hideCheck');
 };
 
-const sendMessage = (event) => {
+const sendMessage = () => {
   const messageText = document.querySelector('.messageText').value;
   const { contact, visibility, from } = messageStatus;
 
@@ -101,10 +105,16 @@ const sendMessage = (event) => {
   };
 
   axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', messageObject)
-    .then(() => showMessages())
+    .then(() => {
+      document.querySelector('.messageText').value = '';
+      showMessages();
+    })
     .catch(() => window.location.reload());
 };
 sendButton.addEventListener('click', sendMessage);
+document.querySelector('.messageText').addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') sendButton.click();
+});
 
 const showMessages = async () => {
   const messagesObject = await loadMessages();
@@ -227,8 +237,7 @@ const loginHandle = async (response) => {
   }
 };
 
-const loginRequest = (event) => {
-  console.log(event.KeyCode)
+const loginRequest = () => {
   const { value } = document.querySelector('.loginName');
   const data = {
     name: value,
