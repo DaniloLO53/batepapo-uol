@@ -4,19 +4,20 @@ const container = document.querySelector('.sidebarWithBackdrop');
 const messagesContainer = document.querySelector('.messagesContainer');
 const participants = document.querySelector('.participants');
 const visibilityType = document.querySelector('.visibilityType');
+const sendButton = document.querySelector('.sendButton');
 
 const messageStatus = {
   contact: 'Todos',
   visibility: 'Público',
+  from: '',
 };
 
 const loadCheck = () => {
   const { contact, visibility } = messageStatus;
-  // console.log(Array.from(document.querySelectorAll('.participantName'))[0].outerText)
 
   const currentContact = Array.from(document.querySelectorAll('.participantsButton')).filter((button) => button.firstElementChild.firstElementChild.nextElementSibling.outerText === contact);
+  if (currentContact.length === 0) alert('Usuário escolhido saiu');
   const currentVisibility = Array.from(document.querySelectorAll('.participantsButton')).filter((button) => button.firstElementChild.firstElementChild.nextElementSibling.outerText === visibility);
-  console.log(document.querySelector('.check'), currentContact[0])
   currentContact[0].firstElementChild.nextElementSibling.classList.remove('hideCheck');
   currentVisibility[0].firstElementChild.nextElementSibling.classList.remove('hideCheck');
 };
@@ -61,17 +62,11 @@ const buildLoginPage = () => {
 
 const keepConnection = () => {
   const { value } = document.querySelector('.loginName');
-  const data = {
-    name: value,
-  };
 
-  console.log('keep')
-  const request = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', data);
-  // request.then((r) => console.log(r));
+  axios.post('https://mock-api.driven.com.br/api/v6/uol/status', { name: value });
 };
 
 const participantsHandleClick = (event) => {
-  // console.log(event.target, event.currentTarget);
   let correctTarget = event.currentTarget;
 
   const contacts = document.querySelector('.participants');
@@ -80,70 +75,86 @@ const participantsHandleClick = (event) => {
   const checkFromContacts = Array.from(contacts.children).map((contact) => contact.querySelector('.check'));
   const checkFromVisibility = Array.from(visibility.children).map((v) => v.querySelector('.check'));
 
-  console.log(correctTarget.parentElement.className)
 
   if (correctTarget.parentElement.className === 'visibilityType') {
     Array.from(checkFromVisibility).map((icon) => icon.classList.add('hideCheck'));
+    messageStatus.visibility = correctTarget.firstElementChild.firstElementChild.nextElementSibling.innerHTML;
   } else {
+    messageStatus.contact = correctTarget.firstElementChild.firstElementChild.nextElementSibling.innerHTML;
     Array.from(checkFromContacts).map((icon) => icon.classList.add('hideCheck'));
-    console.log(checkFromContacts)
   }
 
+  document.querySelector('.writeHere').innerHTML = (`Enviando para ${messageStatus.contact} (${messageStatus.visibility})`);
+
   correctTarget.firstElementChild.nextElementSibling.classList.remove('hideCheck');
-
-  // if (event.target !== event.currentTarget) {
-  //   correctTarget = event.target;
-  // }
-
-  console.log(correctTarget);
 };
 
-const sendMessage = () => {
-  const messageText = document.querySelector('.messageText');
+const sendMessage = (event) => {
+  const messageText = document.querySelector('.messageText').value;
+  const { contact, visibility, from } = messageStatus;
 
+  const messageObject = {
+    from,
+    to: contact,
+    text: messageText,
+    type: visibility === 'Público' ? 'message' : 'private_message',
+  };
+
+  axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', messageObject)
+    .then(() => showMessages())
+    .catch(() => window.location.reload());
 };
+sendButton.addEventListener('click', sendMessage);
 
-const showMessages = () => {
-  const messagesObject = loadMessages();
-  messagesObject.then(({ data }) => {
-    console.log(data);
+const showMessages = async () => {
+  const messagesObject = await loadMessages();
+  const { data } = messagesObject;
 
-    data.map(({ from, text, time, to, type }) => {
-      const message = document.createElement('div');
-      const messageTime = document.createElement('p');
-      const messageAuthor = document.createElement('p');
-      const messageTo = document.createElement('p');
-      const messageText = document.createElement('p');
+  Array.from(document.querySelectorAll('.messageBlock')).map((button) => button.remove());
 
-      message.classList.add('messageBlock');
-      messageTime.classList.add('messageTime');
-      messageAuthor.classList.add('messageAuthor');
-      messageTo.classList.add('messageTo');
-      messageText.classList.add('messageText');
+  data.map(({ from, text, time, to, type }) => {
+    const notForMe = type === 'private_message' && to !== messageStatus.from;
+    const forMe = type === 'private_message' && to === messageStatus.from;
 
-      messageTime.innerHTML = `(${time})`;
-      messageAuthor.innerHTML = from;
-      messageText.innerHTML = text;
+    const message = document.createElement('div');
+    const messageTime = document.createElement('p');
+    const messageAuthor = document.createElement('p');
+    const messageText = document.createElement('p');
 
-      messagesContainer.appendChild(message);
-      message.appendChild(messageTime);
-      message.appendChild(messageAuthor);
-      message.appendChild(messageText);
+    message.classList.add('messageBlock');
+    messageTime.classList.add('messageTime');
+    messageText.classList.add('messageText');
 
-      switch (type) {
-        case 'status':
+    messageTime.innerHTML = `(${time})`;
+    const forWho = `para <strong>${to}</strong>`;
+    messageAuthor.innerHTML = `<strong>${from}</strong> ${forMe ? 'reservadamente' : ''} ${type === 'status' ? '' : forWho}`;
+    messageText.innerHTML = text;
 
-      }
-    });
+    if (notForMe) {
+      message.remove();
+      return;
+    }
+    if (forMe) message.classList.add('pink');
+    if (type === 'status') message.classList.add('gray');
+
+    messagesContainer.appendChild(message);
+    message.appendChild(messageTime);
+    message.appendChild(messageAuthor);
+    message.appendChild(messageText);
   });
+
+  const messages = document.querySelectorAll('.messageBlock');
+  const lastMessage = messages[messages.length - 1];
+  lastMessage.scrollIntoView();
 };
 
 const showParticipants = () => {
   const participantsObject = loadParticipants();
 
   participantsObject.then(({ data }) => {
-    console.log(data);
     const newData = [{ name: 'Todos' }, { name: 'Público' }, { name: 'Reservadamente' }, ...data];
+
+    Array.from(document.querySelectorAll('.participantsButton')).map((button) => button.remove());
 
     newData.map(({ name }) => {
       const visibility = name === 'Público' || name === 'Reservadamente';
@@ -207,25 +218,27 @@ const loginHandle = async (response) => {
     loginContainer.classList.add('hideLogin');
 
     setInterval(() => keepConnection(), 5000);
+    setInterval(() => showMessages(), 3000);
+    setInterval(() => showParticipants(), 10000);
     showMessages();
     showParticipants();
   } else {
-    console.log(fetched)
     alert('Por favor, entre com um nome de usuário diferente, pois este já está em uso.');
   }
 };
 
-const loginRequest = () => {
+const loginRequest = (event) => {
+  console.log(event.KeyCode)
   const { value } = document.querySelector('.loginName');
   const data = {
     name: value,
   };
+  messageStatus.from = value;
 
   const request = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants ', data);
   const fetched = request.then((response) => response).catch((error) => error);
   loginHandle(fetched);
 };
-
 
 window.addEventListener('load', buildLoginPage);
 backdrop.addEventListener('click', toggleSideBarViaBackdrop);
