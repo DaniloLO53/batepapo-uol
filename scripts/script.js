@@ -96,7 +96,10 @@ const participantsHandleClick = (event) => {
 const sendMessage = () => {
   const messageText = document.querySelector('.messageText').value;
 
-  if (messageText.length === 0) alert('Escreva uma mensagem');
+  if (messageText.length === 0) {
+    alert('Escreva uma mensagem');
+    return;
+  }
 
   const { contact, visibility, from } = messageStatus;
 
