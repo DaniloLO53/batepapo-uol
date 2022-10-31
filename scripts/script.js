@@ -32,6 +32,37 @@ const toggleSideBarViaBackdrop = () => {
   backdrop.className = 'backdrop hide';
 };
 
+const buildLoadingPage = () => {
+  const body = document.querySelector('body');
+
+  console.log(9);
+
+  const squareWrapper = document.createElement('div');
+  squareWrapper.classList.add('squareWrapper');
+
+  for (let i = 0; i < 18; i++) {
+    const square = document.createElement('div');
+    const miniSquare = document.createElement('div');
+
+    square.classList.add(`square`);
+    miniSquare.classList.add(`miniSquare`);
+    // square.setAttribute('data-i', i);
+    square.style.transform = `rotate(${i * 30 + 'deg'})`;
+    const color = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+    console.log(color);
+    miniSquare.style.backgroundColor = color;
+    // console.log(window.getComputedStyle(square, 'before'))
+    // const ball = window.getComputedStyle(square, 'before');
+
+    // square.setAttribute('data-delay', `${i}s`);
+    miniSquare.style.animationDelay = `${i / 12}s`;
+    squareWrapper.append(square);
+    square.append(miniSquare);
+  }
+
+  body.prepend(squareWrapper);
+};
+
 const buildLoginPage = () => {
   const body = document.querySelector('body');
 
@@ -228,6 +259,7 @@ const loadMessages = () => {
 
 const loginHandle = async (response) => {
   const fetched = await response;
+  document.querySelector('.squareWrapper').remove();
 
   if (fetched.status === 200) {
     const loginContainer = document.querySelector('.loginContainer');
@@ -251,6 +283,7 @@ const loginRequest = () => {
   messageStatus.from = value;
 
   const request = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants ', data);
+  buildLoadingPage();
   const fetched = request.then((response) => response).catch((error) => error);
   loginHandle(fetched);
 };
